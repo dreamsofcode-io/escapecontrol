@@ -1,21 +1,33 @@
 ;; Caps to escape/control configuration for Kanata
 
+(defcfg
+  process-unmapped-keys yes
+)
+
 (defsrc
   f1   f2   f3   f4   f5   f6   f7   f8   f9   f10   f11   f12
   caps
+  fn
 )
 
 ;; Definine two aliases, one for esc/control to other for function key
 (defalias
-  escctrl (tap-hold 100 100 esc lctl)
+  escctrl (tap-hold 200 200 esc lctl)
+  globefn (tap-hold 200 200 fn (layer-toggle fn))
 )
 
 (deflayer base
-  brdn  brup  _    _    _    _   prev  pp  next  mute  vold  volu
+  ;; comming-up on the next release (kanata > 1.8.0)
+  ;; see: https://github.com/jtroo/kanata/pull/1533/commits/08dc9e6ff1968e7434a5b5026471027aec1398c9
+  ;;
+  ;; brdn  brup  mctl  sls  dtn  dnd  prev  pp  next  mute  vold  volu
+  brdn  brup  -  -  -  -  prev  pp  next  mute  vold  volu
   @escctrl
+  @globefn
 )
 
 (deflayer fn
   f1   f2   f3   f4   f5   f6   f7   f8   f9   f10   f11   f12
   @escctrl
+  _
 )
