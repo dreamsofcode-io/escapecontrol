@@ -1,0 +1,64 @@
+;; Caps to escape/vim-nav configuration for Kanata
+;; Caps Lock: tap for Escape, hold for Vim navigation
+;; Windows/Command key acts as Control, Control key acts as Windows/Command (unconditional swap)
+
+(defcfg
+  process-unmapped-keys yes ;; Allow keys not in defsrc to function normally
+)
+
+;; Keep the original, working configuration as a reference
+;; (This was the working configuration you shared)
+;;
+;; (defsrc
+;;   caps
+;; )
+;;
+;; (defalias
+;;   escctrl (tap-hold 100 100 esc lctl)
+;; )
+;;
+;; (deflayer base
+;;   @escctrl
+;; )
+
+;; Include all keys we need to remap in defsrc
+(defsrc
+  caps
+  h j k l
+  w b e 0 4 g
+  f d u
+  lmet rmet lctl rctl
+)
+
+;; Define the escape + vim navigation alias
+(defalias
+  escvim (tap-hold 100 100 esc (layer-toggle vimnav))
+  
+  ;; Common key combinations for navigation
+  home home    ;; Beginning of line
+  end end      ;; End of line
+  pgdn pgdn    ;; Page down
+  pgup pgup    ;; Page up
+  
+  ;; Word movement
+  wordnext C-right  ;; Next word
+  wordprev C-left   ;; Previous word
+)
+
+;; Base layer - normal behavior except for caps and modifier swaps
+(deflayer base
+  @escvim  ;; caps becomes esc when tapped, activates vimnav when held
+  _     _     _     _      ;; h, j, k, l pass through normally
+  _     _     _     _     _     _     ;; w, b, e, 0, 4 ($), g pass through normally
+  _     _     _     ;; f, d, u pass through normally
+  lctl  lctl  lmet  lmet  ;; Direct mapping: Windows/Command → Control, Control → Windows/Command
+)
+
+;; Vim navigation layer - active when caps is held
+(deflayer vimnav
+  _      ;; caps key remains the modifier
+  left down up right  ;; h, j, k, l become arrow keys
+  @wordnext @wordprev right @home @end _  ;; w, b, e, 0, 4 ($), g
+  _ @pgdn @pgup  ;; f, d, u (f is kept as-is for find char functionality)
+  lctl  lctl  lmet  lmet  ;; Keep the same key mapping as base layer
+)
